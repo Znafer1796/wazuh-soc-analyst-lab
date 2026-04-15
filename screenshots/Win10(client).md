@@ -1,6 +1,6 @@
 # Win10 Client - Join AD (Win Server)
 
-## Thông tin
+## Information
 - **Key Win10 Pro:** VDNJH-BTH7H-VDFBR-M9DBV-QPFDB
 - **Join AD (Win Server) as IT role**
 
