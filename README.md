@@ -1,105 +1,120 @@
-# 🔐 Wazuh SOC Analyst Lab
+# 🔐 Wazuh SOC Analyst Lab (AD + pfSense + Sysmon + Nmap)
 
 ## 📌 Overview
 
-This project is a hands-on SOC (Security Operations Center) lab built to simulate real-world monitoring and threat detection using **Wazuh**, **Sysmon**, and Windows environments.
+This project is a full SOC (Security Operations Center) lab simulating a real enterprise environment with **Active Directory**, network segmentation, endpoint monitoring, and threat detection using **Wazuh SIEM**.
 
-The lab focuses on:
+The lab is designed to:
 
-* Log collection & analysis
-* Threat detection using custom rules
-* Monitoring network activity (Zenmap/Nmap)
-* Endpoint visibility with Sysmon
+* Monitor Windows endpoints in an AD domain
+* Detect network scanning activities (Nmap/Zenmap)
+* Collect and analyze logs using Wazuh
+* Apply centralized policies using Group Policy (GPO)
 
 ---
 
 ## 🏗️ Lab Architecture
 
-* **Wazuh Server** (SIEM)
-* **Windows 10 Client** (with Sysmon + Wazuh Agent)
-* **Windows Server** (optional - AD environment)
-* Network configured via virtual lab (VMware)
+### 🔹 Components:
+
+* **Kali Linux** → Wazuh Server (SIEM)
+* **pfSense** → Firewall / Network segmentation
+* **Windows Server** → Active Directory Domain Controller
+* **Windows 10 Client** → Domain-joined endpoint
+* **Attacker Machine (Kali)** → Nmap scanning
+
+### 🔹 Network:
+
+* Internal LAN managed by pfSense
+* All machines communicate through pfSense
+* Wazuh collects logs from endpoints via agents
 
 ---
 
 ## ⚙️ Technologies Used
 
 * Wazuh (SIEM & Log Management)
-* Sysmon (System Monitoring)
-* Windows 10 / Windows Server
+* Sysmon (Windows Event Monitoring)
+* Active Directory (Windows Server)
+* Group Policy (GPO)
+* pfSense (Firewall)
 * Nmap / Zenmap (Network Scanning)
-* Virtualization (VMware)
+* Kali Linux
+* VMware (Virtual Lab)
 
 ---
 
-## 🚀 Setup Steps
+## 🚀 Implementation Steps
 
-### 1. Install Wazuh Server
+### 1. Network Setup (pfSense)
 
-* Deployed Wazuh on Linux
-* Accessed Wazuh dashboard via web UI
+* Configured WAN & LAN interfaces
+* Enabled internal network communication
+* Allowed controlled outbound access
 
-### 2. Add Agents
+### 2. Active Directory Setup
 
-* Installed Wazuh Agent on:
+* Installed AD DS on Windows Server
+* Promoted to Domain Controller
+* Created domain users & joined Windows 10 client
 
-  * Windows 10
-  * Windows Server
-* Connected agents to Wazuh manager
+### 3. GPO Configuration
 
-### 3. Install Sysmon
+* Applied Group Policy to:
 
-* Installed Sysmon on Windows machine
-* Configured logging for:
+  * Enable logging
+  * Configure security settings
+  * Prepare endpoints for monitoring
 
-  * Process creation
-  * Network connections
-  * File changes
+### 4. Wazuh Deployment (Kali)
 
-### 4. Log Collection
+* Installed Wazuh Server on Kali Linux
+* Accessed Wazuh Dashboard
+* Connected agents from Windows machines
+
+### 5. Sysmon Installation
+
+* Installed Sysmon on Windows 10
+* Configured to log:
+
+  * Process creation (Event ID 1)
+  * Network connections (Event ID 3)
+  * File creation (Event ID 11)
+
+### 6. Log Collection
 
 * Verified logs from:
 
   * Sysmon
   * Windows Event Logs
-  * Network activity
+  * Security events from AD
 
 ---
 
-## 🔍 Detection Use Cases
+## 🔍 Detection Use Case: Nmap Scan
 
-### 1. Network Scanning Detection (Zenmap/Nmap)
+### Scenario:
 
-* Performed scan using Zenmap
-* Captured logs in Wazuh
-* Created detection rule for:
+An attacker machine (Kali Linux) performs a network scan using Nmap/Zenmap.
 
-  * Suspicious network connections
-  * Port scanning behavior
+### Detection Flow:
 
-### 2. Sysmon Event Monitoring
-
-* Event ID 1: Process Creation
-* Event ID 3: Network Connection
-* Event ID 11: File Creation
+1. Nmap scan initiated
+2. Sysmon logs network connections (Event ID 3)
+3. Logs forwarded to Wazuh
+4. Wazuh triggers alert based on custom rule
 
 ---
 
-## 🧠 Custom Rules (Wazuh)
+## 🧠 Custom Wazuh Rules
 
-* Created custom rules to detect:
+Example rule to detect scanning activity:
 
-  * Nmap scanning activity
-  * Suspicious processes
-  * Unusual network behavior
-
-Example:
-
-```
+```xml
 <rule id="100001" level="10">
   <if_sid>sysmon_event3</if_sid>
-  <field name="destination_port">22|80|443</field>
-  <description>Possible scanning activity detected</description>
+  <field name="destination_port">22|80|443|3389</field>
+  <description>Possible Nmap scanning activity detected</description>
 </rule>
 ```
 
@@ -107,10 +122,10 @@ Example:
 
 ## 📊 Results
 
-* Successfully collected logs from multiple endpoints
-* Detected scanning activity from Zenmap
-* Visualized events in Wazuh dashboard
-* Built basic SOC detection pipeline
+* Successfully deployed a SOC monitoring environment
+* Integrated AD + endpoint logging
+* Detected Nmap scanning activity in real-time
+* Visualized alerts in Wazuh dashboard
 
 ---
 
@@ -118,40 +133,42 @@ Example:
 
 (Add your screenshots here)
 
-* Wazuh dashboard
-* Agent status
-* Detected alerts
+* Wazuh dashboard alerts
+* Agent status (connected)
 * Sysmon logs
+* Nmap scan results
+* pfSense network configuration
 
 ---
 
-## 🎯 Skills Gained
+## 🎯 Skills Demonstrated
 
 * SIEM deployment (Wazuh)
-* Log analysis & correlation
-* Threat detection engineering
-* Windows monitoring with Sysmon
-* Basic SOC operations workflow
+* Windows Active Directory administration
+* Log analysis & threat detection
+* Network security (pfSense)
+* Endpoint monitoring with Sysmon
+* Detection engineering (custom rules)
 
 ---
 
 ## 📌 Future Improvements
 
-* Integrate Active Directory logging
-* Improve detection rules (reduce false positives)
 * Add MITRE ATT&CK mapping
-* Automate alert responses
+* Improve detection rules (reduce false positives)
+* Add brute-force detection (RDP/SSH)
+* Integrate alert automation (SOAR)
 
 ---
 
 ## 👤 Author
 
-* Name: (Your Name)
-* Role: SOC Analyst (Beginner)
+* Name: Nguyễn Thế Thái(Znafer)
+* Role: SOC Analyst (Entry-level)
 * Field: Cybersecurity / Blue Team
 
 ---
 
 ## ⭐ Notes
 
-This lab is built for learning purposes and simulates real SOC monitoring scenarios. It can be extended further with advanced threat detection and automation.
+This lab simulates a real enterprise SOC environment including domain infrastructure, endpoint monitoring, and attack detection. It is designed for learning and practical cybersecurity experience.
