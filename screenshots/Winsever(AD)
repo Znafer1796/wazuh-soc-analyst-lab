@@ -1,0 +1,45 @@
+# Windows Server - Active Directory Domain Services
+
+## Server Information
+- **OS:** Windows Server 2022
+- **Role:** Domain Controller
+- **Domain Name:** (your domain name, e.g: lab.local)
+
+---
+
+## 1. Install AD Domain Services
+
+- Open **Server Manager** → Add Roles and Features
+- Select **Active Directory Domain Services**
+- After installation → Promote server to Domain Controller
+- Create New Forest → set domain name
+- Restart server when completed
+
+---
+
+## 2. Create User/Group in AD
+
+- Open **Active Directory Users and Computers**
+- Create **Organizational Unit (OU):** IT, HR, ...
+- Create **Group:** IT-Group, HR-Group, ...
+- Create **User:**
+  - Username: `IT`
+  - Password: (your password)
+  - Add user to corresponding group
+
+---
+
+## 3. Join Client Machine to Domain
+
+- On **Win10 Client** machine:
+  - Go to Settings → System → About → **Join a domain**
+  - Enter domain name (e.g: lab.local)
+  - Enter Admin credentials to authenticate
+  - Restart machine
+- Login with domain account (e.g: `lab\IT`)
+
+---
+
+## Screenshots
+
+![image](542c1846-b6a5-4e50-9bad-899de7db1972.jpg)
