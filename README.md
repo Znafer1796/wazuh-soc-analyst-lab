@@ -1,0 +1,1 @@
+# wazuh-soc-analyst-lab
