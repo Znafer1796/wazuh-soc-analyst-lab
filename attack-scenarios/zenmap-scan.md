@@ -1,3 +1,4 @@
+<img width="775" height="721" alt="download" src="https://github.com/user-attachments/assets/3684de24-2a45-44a7-9d4d-b668d0415346" />
 ## Scenario: Network Scan Detection (Zenmap)
 
 **Tool:** Zenmap (GUI for Nmap)
